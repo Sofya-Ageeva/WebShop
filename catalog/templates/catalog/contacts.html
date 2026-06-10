@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Контакты - WebShop</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .contact-card {
+            transition: transform 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-send {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-send:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Хедер / Навигация -->
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">
+        <a href="/" class="text-decoration-none text-dark">WebShop</a>
+    </h5>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary me-2" href="/">Каталог</a>
+        <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
+    </nav>
+</div>
+
+<!-- Заголовок -->
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Контакты</h1>
+    <p class="lead">Свяжитесь с нами — мы всегда рады помочь!</p>
+</div>
+
+<!-- Контент -->
+<div class="container">
+    <div class="row">
+        <!-- Информация о контактах -->
+        <div class="col-md-5 mb-4">
+            <div class="card contact-card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4"> Наши контакты</h3>
+                    <p><strong> Адрес:</strong> г. Сосновый Бор, ул. Уличная,</p>
+                    <p><strong>Телефон:</strong> +7 (999) 999-99-99</p>
+                    <p><strong>Email:</strong> info@webshop.ru</p>
+                    <p><strong>Режим работы:</strong> Пн-Пт: 10:00 - 12:00</p>
+                    <hr>
+                    <p class="text-muted">Мы в социальных сетях:</p>
+                    <div>
+                        <a href="#" class="btn btn-outline-primary me-2">****мм</a>
+                        <a href="#" class="btn btn-outline-primary">***s**p</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма обратной связи -->
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Обратная связь</h3>
+
+                    {% if success %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Спасибо, {{ name }}!</strong> Ваше сообщение успешно отправлено. Мы свяжемся с вами в ближайшее время.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'catalog:contacts' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Ваше имя *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Сообщение *</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-send btn-primary w-100 text-white">Отправить сообщение</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Футер -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md">
+                <h5>WebShop</h5>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Категории</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted text-decoration-none" href="#">Категория</a></li>
+                    <li><a class="text-muted text-decoration-none" href="#">Категория</a></li>
+                    <li><a class="text-muted text-decoration-none" href="#">Категория</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Дополнительно</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted text-decoration-none" href="#">Доставка и оплата</a></li>
+                    <li><a class="text-muted text-decoration-none" href="#">Гарантия</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>О нас</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted text-decoration-none" href="/contacts/">Контакты</a></li>
+                    <li><a class="text-muted text-decoration-none" href="#">О компании</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
