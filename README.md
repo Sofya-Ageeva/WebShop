@@ -15,6 +15,8 @@
 
 ## Установка
 ```bash
+git clone https://github.com/Sofya-Ageeva/WebShop.git
+cd WebShop
 python -m venv venv
 source venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
