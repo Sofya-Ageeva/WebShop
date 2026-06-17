@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}WebShop{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        .btn-buy {
+            background: #6610f2 !important;
+            border: none !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 5px !important;
+            font-weight: bold !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        .btn-buy:hover {
+            opacity: 0.9 !important;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Подшаблон шапки -->
+    {% include 'catalog/includes/header.html' %}
+
+    <!-- Основной контент -->
+    <main class="container-fluid">
+        <div class="row">
+            <main class="col-12 px-md-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </main>
+
+    <!-- Подвал -->
+    <footer class="py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2026 WebShop. Все права у меня есть.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
