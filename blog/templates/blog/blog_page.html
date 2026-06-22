@@ -1,0 +1,33 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Блог - WebShop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Блог</h1>
+    <a href="{% url 'blog:create' %}" class="btn btn-primary mb-3">➕ Добавить статью</a>
+    
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if post.preview %}
+                    <img src="{{ post.preview.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+                    <p class="text-muted"> {{ post.views_count }}</p>
+                    <a href="{% url 'blog:detail' post.pk %}" class="btn btn-primary">Читать</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">В настоящее время статей нет.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
