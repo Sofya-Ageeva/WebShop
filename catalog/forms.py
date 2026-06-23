@@ -51,8 +51,8 @@ class ProductForm(forms.ModelForm):
             for forbidden in FORBIDDEN_WORDS:
                 if forbidden in name_lower:
                     raise ValidationError(
-                        f'Название содержит запрещённое слово: "{forbidden}". '
-                        f'Пожалуйста, удалите его.'
+                        f'"{forbidden}" не может быть использовано для наименования. '
+                        f'Пожалуйста, введите новое слово.'
                     )
         return name
 
@@ -64,8 +64,8 @@ class ProductForm(forms.ModelForm):
             for forbidden in FORBIDDEN_WORDS:
                 if forbidden in desc_lower:
                     raise ValidationError(
-                        f'Описание содержит запрещённое слово: "{forbidden}". '
-                        f'Пожалуйста, удалите его.'
+                        f'"{forbidden}" не может быть использовано в описании. '
+                        f'Пожалуйста, замените его.'
                     )
         return description
 
@@ -78,3 +78,23 @@ class ProductForm(forms.ModelForm):
                 'Пожалуйста, введите корректную цену.'
             )
         return price
+
+    def clean_image(self):
+        """Валидация изображения"""
+        image = self.cleaned_data.get('image')
+
+        if image:
+            if image.size > 5 * 1024 * 1024:
+                raise ValidationError(
+                    'Размер изображения не должен превышать 5 МБ. '
+                    f'Текущий размер: {image.size / 1024 / 1024:.2f} МБ'
+                )
+
+            valid_extensions = ['image/jpeg', 'image/png']
+            if image.content_type not in valid_extensions:
+                raise ValidationError(
+                    'Поддерживаются только форматы JPEG и PNG. '
+                    f'Загружен: {image.content_type}'
+                )
+
+        return image

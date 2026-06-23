@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name='Наименование')
@@ -30,3 +30,8 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        """Валидация на уровне модели"""
+        if self.price is not None and self.price < 0:
+            raise ValidationError({'price':'Цена не может быть отрицательной'})
