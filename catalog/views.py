@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.shortcuts import render
@@ -9,7 +10,6 @@ class HomeView(ListView):
     model = Product
     template_name = 'catalog/home_page.html'
     context_object_name = 'products'
-
 
 class ContactsView(TemplateView):
     """Страница контактов"""
@@ -30,23 +30,29 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """Добавление товара"""
+    login_url = 'users:login'
+    redirect_field_name = 'next'
     model = Product
     form_class = ProductForm
     template_name = 'catalog/add_product.html'
     success_url = reverse_lazy('catalog:home')
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """Редактирование товара"""
+    login_url = 'users:login'
+    redirect_field_name = 'next'
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_update.html'
     success_url = reverse_lazy('catalog:home')
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     """Удаление товара"""
+    login_url = 'users:login'
+    redirect_field_name = 'next'
     model = Product
     template_name = 'catalog/product_delete.html'
     success_url = reverse_lazy('catalog:home')
