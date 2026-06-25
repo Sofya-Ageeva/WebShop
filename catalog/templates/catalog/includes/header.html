@@ -8,33 +8,55 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <!-- Основное меню (слева) -->
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'catalog:home' %}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Категории</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Корзина</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
                     </li>
+                </ul>
 
+                <!-- Правая часть с пользователем -->
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'catalog:add_product' %}">Добавить товар</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:logout' %}">Выйти ({{ user.email }})</a>
+                        <!-- Если пользователь авторизован -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if user.avatar %}
+                                    <img src="{{ user.avatar.url }}" alt="Аватар" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                                {% else %}
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; color: white; font-weight: bold;">
+                                        {{ user.email|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <span>{{ user.email }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">
+                                    <i class="bi bi-person"></i> Профиль
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'catalog:add_product' %}">
+                                    <i class="bi bi-plus-circle"></i> Добавить товар
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </a></li>
+                            </ul>
                         </li>
                     {% else %}
+                        <!-- Если пользователь не авторизован -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+                            <a class="nav-link" href="{% url 'users:login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Вход
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+                            <a class="nav-link" href="{% url 'users:register' %}">
+                                <i class="bi bi-person-plus"></i> Регистрация
+                            </a>
                         </li>
                     {% endif %}
                 </ul>

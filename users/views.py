@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 
 def register(request):
@@ -62,3 +63,8 @@ def user_logout(request):
     logout(request)
     messages.info(request, 'Вы вышли из системы.')
     return redirect('catalog:home')
+
+@login_required
+def profile(request):
+    """Страница профиля пользователя"""
+    return render(request, 'users/profile.html', {'user': request.user})
