@@ -4,6 +4,7 @@ decorator==5.3.1
 Django==6.0.6
 django-redis==7.0.0
 executing==2.2.1
+hiredis==3.4.0
 ipython==9.14.1
 ipython_pygments_lexers==1.1.1
 jedi==0.20.0
