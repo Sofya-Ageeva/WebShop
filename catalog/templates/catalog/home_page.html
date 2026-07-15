@@ -1,0 +1,45 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block title %}Главная - WebShop{% endblock %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Добро пожаловать в WebShop</h1>
+    <p class="lead">Лучшие товары из твоих фантазий</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+            <div class="card product-card h-100 box-shadow w-100">
+                <div class="card-header card-header-custom">
+                    <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top mb-3" alt="{{ product.name }}" style="height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center mb-3" style="height: 150px;">
+                            <span class="text-muted">Нет изображения</span>
+                        </div>
+                    {% endif %}
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li><strong>Описание:</strong> {{ product.description|truncatechars:80 }}</li>
+                        <li><strong>Цена:</strong> ${{ product.price }}</li>
+                    </ul>
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-lg btn-block btn-buy w-100 text-white mt-auto">
+                        Подробнее
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Товары пока не добавлены.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
