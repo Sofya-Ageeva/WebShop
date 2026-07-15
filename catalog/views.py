@@ -2,6 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 from .models import Product
 from .forms import ProductForm
@@ -28,12 +30,18 @@ class ContactsView(TemplateView):
         print(f"\nПолучено сообщение от {name} ({email}): {message}\n")
         return render(request, self.template_name, {'success': True, 'name': name})
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     """Страница товара"""
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.views_count +=1
+        obj.save()
+        return obj
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
