@@ -33,6 +33,7 @@ class Product(models.Model):
         null=True,
         blank=True
     )
+    views_count = models.PositiveBigIntegerField(default=0, verbose_name='Просмотрено' )
 
     class Meta:
         verbose_name = 'Продукт'

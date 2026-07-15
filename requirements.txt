@@ -2,7 +2,9 @@ asgiref==3.11.1
 asttokens==3.0.1
 decorator==5.3.1
 Django==6.0.6
+django-redis==7.0.0
 executing==2.2.1
+hiredis==3.4.0
 ipython==9.14.1
 ipython_pygments_lexers==1.1.1
 jedi==0.20.0
@@ -17,7 +19,9 @@ ptyprocess==0.7.0
 pure_eval==0.2.3
 Pygments==2.20.0
 python-dotenv==1.2.2
+redis==8.0.1
 sqlparse==0.5.5
 stack-data==0.6.3
 traitlets==5.15.1
+typing_extensions==4.16.0
 wcwidth==0.8.1

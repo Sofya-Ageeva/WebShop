@@ -1,7 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
+from .services import get_products_by_category, get_category_by_id, get_product_by_id, clear_category_cache
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 from .models import Product
 from .forms import ProductForm
@@ -28,12 +31,22 @@ class ContactsView(TemplateView):
         print(f"\nПолучено сообщение от {name} ({email}): {message}\n")
         return render(request, self.template_name, {'success': True, 'name': name})
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     """Страница товара"""
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        product_id = self.kwargs.get('pk')
+        product = get_product_by_id(product_id)
+        if product is None:
+            from django.http import Http404
+            raise Http404("Продукт не найден")
+        product.views_count += 1
+        product.save()
+        return product
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -48,8 +61,9 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         """Присвоение автора продукту"""
         form.instance.owner = self.request.user
-        return super().form_valid(form)
-
+        response = super().form_valid(form)
+        clear_category_cache(form.instance.category_id)
+        return response
 
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -71,6 +85,11 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if user.has_perm('catalog.can_unpublish_product'):
             return True
         return False
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        clear_category_cache(self.object.category_id)
+        return response
 
     def handle_no_permission(self):
         """Отправка оповещения об отсутствии прав"""
@@ -101,6 +120,13 @@ class ProductDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
         messages.error(self.request, 'У вас нет прав на удаление карточки.')
         return redirect('catalog:home')
 
+    def delete(self, request, *args, **kwargs):
+        product = self.get_object()
+        category_id = product.category_id
+        response = super().delete(request, *args, **kwargs)
+        clear_category_cache(category_id)
+        return response
+
 
 class ProductUnpublishView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Отмена публикации продукта (только для модераторов)"""
@@ -126,3 +152,18 @@ class ProductUnpublishView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         product.save()
         messages.success(self.request, f'Публикация продукта "{product.name}" отменена.')
         return super().form_valid(form)
+
+class CategoryProductsView(ListView):
+    """Список продуктов в категории (с кешированием)"""
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get('category_id')
+        context['category'] = get_category_by_id(category_id)
+        return context
